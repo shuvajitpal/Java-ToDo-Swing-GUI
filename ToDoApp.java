@@ -1,7 +1,6 @@
 package com.ElevateLabs;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 
 public class ToDoApp {
    public static void main(String[] args) {
@@ -31,11 +30,10 @@ public class ToDoApp {
 
       taskListModel = new DefaultListModel<>();
       JList<String> taskList = new JList<>(taskListModel);
+
       taskList.setCellRenderer(new DefaultListCellRenderer() {
          @Override
-         public Component getListCellRendererComponent(JList<?> list, Object value,
-                                                       int index, boolean isSelected,
-                                                       boolean cellHasFocus) {
+         public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
             JTextArea area = new JTextArea(value.toString());
             area.setLineWrap(true);
             area.setWrapStyleWord(true);
@@ -50,18 +48,44 @@ public class ToDoApp {
                area.setBackground(list.getBackground());
                area.setForeground(list.getForeground());
             }
-
             return area;
          }
       });
 
-      JScrollPane scrollPane = new JScrollPane(taskList);
+      JScrollPane scrollPanel = new JScrollPane(taskList);
+
+      JLabel emptyLabel = new JLabel("No Tasks Available!", SwingConstants.CENTER);
+      emptyLabel.setForeground(Color.GRAY);
+      emptyLabel.setFont(new Font("Arial", Font.ITALIC, 14));
+
+      JPanel centerPanel = new JPanel(new CardLayout());
+      centerPanel.add(emptyLabel, "EMPTY");
+      centerPanel.add(scrollPanel, "LIST");
+
+      CardLayout cardLayout = (CardLayout) centerPanel.getLayout();
+      cardLayout.show(centerPanel, "EMPTY");
+
+      taskListModel.addListDataListener(new javax.swing.event.ListDataListener() {
+         public void intervalAdded(javax.swing.event.ListDataEvent e) {
+            if (taskListModel.isEmpty()) cardLayout.show(centerPanel, "EMPTY");
+            else cardLayout.show(centerPanel, "LIST");
+         }
+         public void intervalRemoved(javax.swing.event.ListDataEvent e) {
+            if (taskListModel.isEmpty()) cardLayout.show(centerPanel, "EMPTY");
+            else cardLayout.show(centerPanel, "LIST");
+         }
+         public void contentsChanged(javax.swing.event.ListDataEvent e) {
+            if (taskListModel.isEmpty()) cardLayout.show(centerPanel, "EMPTY");
+            else cardLayout.show(centerPanel, "LIST");
+         }
+      });
+      emptyLabel.setVisible(true);
 
       JPanel buttonPanel = new JPanel();
       buttonPanel.add(deleteButton);
 
       frame.add(inputPanel, BorderLayout.NORTH);
-      frame.add(scrollPane, BorderLayout.CENTER);
+      frame.add(centerPanel, BorderLayout.CENTER);
       frame.add(buttonPanel, BorderLayout.SOUTH);
 
       addButton.addActionListener(e -> {
@@ -74,9 +98,7 @@ public class ToDoApp {
 
       deleteButton.addActionListener(e -> {
          int selectedIndex = taskList.getSelectedIndex();
-         if (selectedIndex != -1) {
-            taskListModel.remove(selectedIndex);
-         }
+         if (selectedIndex != -1) taskListModel.remove(selectedIndex);
       });
 
       frame.setVisible(true);
