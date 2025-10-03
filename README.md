@@ -11,7 +11,7 @@ It also gave me experience with concepts like:
 - 🎭 **Custom cell rendering**  
 - 🪄 **Handling empty states**  
 - ✅ **User input validation**  
-## 🛠️ Technical Skills Demonstrated  
+## 🛠️ Technical Skills
 - ☕ **Java Programming** – core language used to implement logic.  
 - 🖼️ **Swing (GUI Toolkit)** – created the user interface (`JFrame`, `JList`, `JTextArea`, `JButton`, `JScrollPane`).  
 - 🎛️ **Event Handling** – implemented `ActionListener` for button clicks and list management.  
